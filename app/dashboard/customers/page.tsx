@@ -38,7 +38,10 @@ export default function CustomersPage() {
             <Button onClick={() => setOpen(true)}>Add Customer</Button>
           </div>
 
-          <DataTable data={customerData} />
+          {/* DataTable wrapper to remove internal padding */}
+          <div className="[&_td]:py-2 [&_td]:px-3 [&_th]:py-2 [&_th]:px-3 [&_.flex-1]:px-0 [&_.flex-1]:lg:px-0">
+            <DataTable data={customerData} />
+          </div>
 
           {/* Popup (Dialog) */}
           <Dialog open={open} onOpenChange={setOpen}>
