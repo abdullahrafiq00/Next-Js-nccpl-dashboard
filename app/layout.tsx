@@ -5,7 +5,8 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ActiveThemeProvider } from "@/components/active-theme"
 import { cookies } from "next/headers";
 import { cn } from "@/lib/utils"
-
+import AuthProvider from "./context/AuthProvider";
+import { Toaster } from "sonner";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -37,23 +38,27 @@ export default async function RootLayout({
   const isScaled = activeThemeValue?.endsWith("-scaled");
   return (
     <html lang="en" suppressContentEditableWarning>
-      <body
-        className={cn(
-          "text-foreground group/body theme-blue overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]",
-        )}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          enableColorScheme
+      {/* WRAPPING UP THE BODY FOR THE SESSION FOR NEXT-AUTH */}
+      <AuthProvider>
+        <body
+          className={cn(
+            "text-foreground group/body theme-blue overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]",
+          )}
         >
-          <ActiveThemeProvider initialTheme={activeThemeValue}>
-            {children}
-          </ActiveThemeProvider>
-        </ThemeProvider>
-      </body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            enableColorScheme
+          >
+            <ActiveThemeProvider initialTheme={activeThemeValue}>
+              {children}
+            </ActiveThemeProvider>
+          </ThemeProvider>
+          <Toaster richColors position="top-right" />
+        </body>
+      </AuthProvider>
     </html>
   );
 }
