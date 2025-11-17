@@ -2,34 +2,44 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
 
+
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             id: "credentials",
             name: "Credentials",
             credentials: {
-                username: { label: "Username", type: "text" },
+                email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
 
             async authorize(credentials: any): Promise<any> {
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+                    console.log("🔍 AUTHORIZING USER WITH CREDENTIALS:", credentials);
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/auth/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            username: credentials.username,
+                            email: credentials.email,
                             password: credentials.password,
                         }),
                     });
 
                     const data = await res.json();
+                    console.log("🔍 BACKEND RESPONSE:", data);
 
                     if (!res.ok) {
                         throw new Error(data.message || "Invalid credentials");
                     }
-    
-                    return data.user;
+
+                    return {
+                        id: data.data.user.id,
+                        name: data.data.user.name,
+                        email: data.data.user.email,
+                        role: data.data.user.role,
+                        permissions: data.data.user.permissions,
+                        accessToken: data.data.accessToken
+                    };;
                 } catch (err: any) {
                     throw new Error(err.message || "Login failed");
                 }
@@ -40,18 +50,24 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token._id = user._id?.toString();
-                token.isVerified = user.isVerified;
-                token.username = user.username;
+                token.id = user.id;
+                token.name = user.name;
+                token.email = user.email;
+                token.role = user.role;
+                token.permissions = user.permissions;
+                token.accessToken = user.accessToken;
             }
-            return token
+            return token;
         },
+
         async session({ session, token }) {
-            if (token && session.user) {
-                session.user._id = token._id as string;
-                session.user.isVerified = token.isVerified as boolean;
-                session.user.username = token.username as string;
-            }
+            session.user.id = token.id;
+            session.user.name = token.name;
+            session.user.email = token.email;
+            session.user.role = token.role;
+            session.user.permissions = token.permissions;
+            session.user.accessToken = token.accessToken;
+
             return session;
         },
     },
