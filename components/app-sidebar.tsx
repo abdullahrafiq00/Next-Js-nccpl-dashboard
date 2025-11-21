@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   IconDashboard,
   IconUser,
+  IconGavel
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -19,9 +20,10 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
+  // update with actual user data as needed
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Admin",
+    email: "admin@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
@@ -35,6 +37,11 @@ const data = {
       url: "/dashboard/customers",
       icon: IconUser,
     },
+    {
+      title: "Auctions",
+      url: "/dashboard/auctions",
+      icon: IconGavel,
+    }
   ],
 }
 

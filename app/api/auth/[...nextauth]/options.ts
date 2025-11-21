@@ -15,7 +15,6 @@ export const authOptions: NextAuthOptions = {
 
             async authorize(credentials: any): Promise<any> {
                 try {
-                    console.log("🔍 AUTHORIZING USER WITH CREDENTIALS:", credentials);
                     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/auth/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -26,7 +25,6 @@ export const authOptions: NextAuthOptions = {
                     });
 
                     const data = await res.json();
-                    console.log("🔍 BACKEND RESPONSE:", data);
 
                     if (!res.ok) {
                         throw new Error(data.message || "Invalid credentials");

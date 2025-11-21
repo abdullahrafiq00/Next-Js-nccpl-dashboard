@@ -1,9 +1,9 @@
-// /lib/api.ts
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosHeaders } from "axios";
 import { getSession, signOut } from "next-auth/react";
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
+    withCredentials: true,
 });
 
 // Request interceptor
