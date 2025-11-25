@@ -1,5 +1,7 @@
 "use client"
 
+import Cookies from "js-cookie"
+
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -28,6 +30,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { signOut } from "next-auth/react"
+import api from "../services/lib/api";
+
 
 export function NavUser({
   user,
@@ -39,6 +44,15 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  async function handleLogout() {
+    try {
+      const res = await api.post('/api/admin/auth/logout', {});
+
+      signOut({ callbackUrl: "/login" });
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -98,10 +112,11 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
+
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
