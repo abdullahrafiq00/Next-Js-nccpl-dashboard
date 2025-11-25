@@ -33,7 +33,7 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Customer",
+      title: "Customers",
       url: "/dashboard/customers",
       icon: IconUser,
     },
